@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador 3D - Bidón con Tapa</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <script>
+        // Crear la escena
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Crear luz ambiental y direccional
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        // Crear el material blanco para el bidón
+        const bidonMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.3, roughness: 0.6 });
+
+        // Crear la geometría del bidón (cilindro)
+        const bidonGeometry = new THREE.CylinderGeometry(3, 3, 8, 32);
+        const bidon = new THREE.Mesh(bidonGeometry, bidonMaterial);
+        scene.add(bidon);
+
+        // Crear la tapa (cilindro más pequeño)
+        const tapaMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff, metalness: 0.8, roughness: 0.2 }); // Azul para destacar
+        const tapaGeometry = new THREE.CylinderGeometry(1.2, 1.2, 1, 32);
+        const tapa = new THREE.Mesh(tapaGeometry, tapaMaterial);
+        tapa.position.y = 4.5; // Colocar encima del bidón
+        scene.add(tapa);
+
+        // Ajustar posición de la cámara
+        camera.position.set(0, 5, 15);
+        camera.lookAt(0, 0, 0);
+
+        // Animación para girar el bidón
+        function animate() {
+            requestAnimationFrame(animate);
+            bidon.rotation.y += 0.01; // Rotación del bidón
+            tapa.rotation.y += 0.01;  // Rotación de la tapa
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Ajustar tamaño al cambiar la ventana
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>
+
+
